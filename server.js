@@ -5,8 +5,11 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// 헬스 체크 (서버 살아있는지 확인용)
-app.get("/", (req, res) => {
+//public 폴더를 먼저 열어줘야 /가 index.html로 감
+app.use(express.static(path.join(__dirname, "public")));
+
+// 헬스 체크는 /health 같은걸로 빼기 (서버 살아있는지 확인용)
+app.get("/health", (req, res) => {
   res.type("text").send("OK");
 });
 
@@ -21,11 +24,9 @@ app.post("/login", (req, res) => {
   console.log("time:", new Date().toISOString());
   console.log("=======================");
 
-  res.json({ success: true });
+  res.json({ success: true, message: `Welcome, ${username}!` });
 });
 
-// public 폴더를 웹으로 열어줌
-app.use(express.static(path.join(__dirname, "public")));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, "0.0.0.0", () => {
