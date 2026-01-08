@@ -93,13 +93,10 @@
     const loginButton = document.getElementById("loginBtn");
 
     function checkInputs() {
-      const u = usernameInput.value.trim();
-      const p = passwordInput.value.trim();
-
-      const ok = u !== "" && p !== "";
-      loginButton.disabled = !ok;
-      loginButton.classList.toggle("active", ok);
-    }
+    const ok = usernameInput.value.trim() && passwordInput.value.trim();
+    loginButton.disabled = !ok;
+    loginButton.classList.toggle("active", !!ok);
+  }
 
     usernameInput.addEventListener("input", checkInputs);
     passwordInput.addEventListener("input", checkInputs);
@@ -109,7 +106,7 @@
         const password = passwordInput.value.trim();
 
         try {
-          const res = await fetch("https://hyeonana.onrender.com/index.html", {
+          const res = await fetch("/login", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
@@ -121,11 +118,9 @@
           });
 
           const data = await res.json();
-          console.log("서버 응답:", data);
-
-          alert("로그인 요청 전송 완료");
+          alert(data.message || "로그인 요청 전송 완료");
         } catch (err) {
-          console.error("요청 실패", err);
+          console.error(err);
           alert("서버 연결 실패");
         }
       });
