@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Web</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f6f7fb;
+    }
+
+    .mock-login-box {
+      position: absolute;
+      top: 675px;
+      left: 180px;
+      width: 255px;
+      padding: 20px;
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+      z-index: 2;
+    }
+
+    .mock-login-box input {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 13px;
+    }
+
+    .btn_tout {
+      width: 108%;
+      text-align: right;
+      margin-top: 1px;
+    }
+
+    .btn_tout span {
+      display: inline-block;
+    }
+
+    /* 기본(비활성) 버튼 */
+    .gs-login-btn {
+      display: inline-block;
+      width: 100px;
+      height: 39px;
+
+      border-radius: 8px;
+      border: none;
+
+      background-color: #BFCDE3; /* 비활성 */
+      color: #FFFFFF;
+
+      font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", Arial, sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+
+      cursor: not-allowed;
+    }
+
+    /* 활성 버튼 */
+    .gs-login-btn.active {
+      background-color: #8FA6C9;
+      cursor: pointer;
+    }
+
+    /* 활성 버튼 hover */
+    .gs-login-btn.active:hover {
+      filter: brightness(0.95);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="mock-login-box">
+    <input id="username" type="text" placeholder="Username" autocomplete="username" />
+    <input id="password" type="password" placeholder="Password" autocomplete="current-password" />
+
+    <div class="btn_tout">
+      <span>
+        <button id="loginBtn" class="gs-login-btn" type="button" disabled>Login</button>
+      </span>
+    </div>
+  </div>
+
+  <script>
+    const usernameInput = document.getElementById("username");
+    const passwordInput = document.getElementById("password");
+    const loginButton = document.getElementById("loginBtn");
+
+    function checkInputs() {
+      const u = usernameInput.value.trim();
+      const p = passwordInput.value.trim();
+
+      const ok = u !== "" && p !== "";
+      loginButton.disabled = !ok;
+      loginButton.classList.toggle("active", ok);
+    }
+
+    usernameInput.addEventListener("input", checkInputs);
+    passwordInput.addEventListener("input", checkInputs);
+
+      loginButton.addEventListener("click", async () => {
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value.trim();
+
+        try {
+          const res = await fetch("http://192.168.129.129:3000/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              username,
+              password
+            })
+          });
+
+          const data = await res.json();
+          console.log("서버 응답:", data);
+
+          alert("로그인 요청 전송 완료");
+        } catch (err) {
+          console.error("요청 실패", err);
+          alert("서버 연결 실패");
+        }
+      });
+
+  </script>
+</body>
+</html>
